@@ -71,3 +71,18 @@ h1 {
 #thankyou {
     margin-top: 20px;
 }
+
+
+/* Fondos de los días del calendario*/
+.bg-success {
+    background-image: linear-gradient(135deg, #b6d6bd, #82e67e) !important;
+}
+  
+  .bg-warning {
+    background-image: linear-gradient(135deg, #e4dabd, #fa9a5b) !important;
+}
+  
+  .bg-ocuped {
+    background-image: linear-gradient(135deg, #e6e0e0, #c7c1c1) !important;
+}
+  

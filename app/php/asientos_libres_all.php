@@ -1,4 +1,8 @@
 <?php
+
+//En producción cambiar por el dominio concreto del docker.
+header('Access-Control-Allow-Origin: *');
+
 // Establecer la conexión a la base de datos
 //CAMBIAR EN PRODUCCIÓN LOCALHOST POR DB
 $dbconn = pg_connect("host=localhost dbname=postgres user=postgres password=asientos");
@@ -34,6 +38,8 @@ while ($row = pg_fetch_assoc($result)) {
 // Cerrar la conexión a la base de datos
 pg_close($dbconn);
 
+header('Content-Type: application/json');
 // Convertir el arreglo asociativo a formato JSON y devolverlo
-echo json_encode($asientosLibres);
+echo json_encode($asientosLibres, JSON_UNESCAPED_UNICODE);
+
 ?>

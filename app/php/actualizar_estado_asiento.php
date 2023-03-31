@@ -1,4 +1,8 @@
 <?php
+
+//En producción cambiar por el dominio concreto del docker.
+header('Access-Control-Allow-Origin: *');
+
 // Obtener los datos enviados desde el archivo Ajax.js
 $id_fecha = $_POST['id_fecha'];
 $numero_asiento = $_POST['numero_asiento'];
