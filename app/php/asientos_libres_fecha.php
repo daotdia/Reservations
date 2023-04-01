@@ -1,7 +1,9 @@
 <?php
 
 //En producción cambiar por el dominio concreto del docker.
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
 // Conexión a la base de datos
 //CAMBIAR EN PRODUCCIÓN LOCALHOST POR DB
@@ -22,6 +24,8 @@ while ($row = pg_fetch_assoc($result)) {
     $asientosLibres[] = $row;
 }
 
+
+header('Content-Type: application/json');
 // Devolver los asientos libres en formato JSON
 echo json_encode($asientosLibres);
 

@@ -1,35 +1,29 @@
 
-function obtenerAllAsientosLibres(){
-    $.ajax({
-        url: "ruta/al/archivo.php",
-        type: "POST",
-        dataType: "json",
-        success: function(data) {
-          // Manipular los datos obtenidos
-          return data;
-        },
-        error: function(xhr, textStatus, errorThrown) {
-          // Manejar el error
-        }
-      });
+function obtenerAllAsientosLibres() {
+  return $.getJSON('http://127.0.0.1:3000/app/php/asientos_libres_all.php').then(function(response) {
+      return response;
+   });
 }
 
-function obtenerAsientosLibresFecha(fecha, successCallback, errorCallback) {
-    // Define los datos que se enviarán al archivo PHP
-    var data = {
-      fecha: fecha
-    };
-  
-    // Realiza la llamada Ajax al archivo PHP
-    $.ajax({
-      url: 'obtener_asientos_libres.php',
-      type: 'POST',
-      data: data,
-      dataType: 'json',
-      success: successCallback,
-      error: errorCallback
-    });
-  }
+
+function obtenerAsientosLibresFecha(fecha){
+  return $.ajax({
+      type: "POST",
+      url: "http://127.0.0.1:3000/app/php/asientos_libres_fecha.php", 
+      data: {
+          fecha: fecha
+      },
+      success: function(response) {
+          // La respuesta del script PHP se recibe aquí como un string en formato JSON.
+          console.log(response);
+
+          return response;
+      },
+      error: function(xhr, status, error) {
+          console.error(error);
+      }
+  });
+}
 
 function actualizarAsiento(id_fecha, numero_asiento, estado) {
     // Define los datos que se enviarán al archivo PHP

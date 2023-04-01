@@ -1,23 +1,25 @@
 $(document).ready(function () {
     const $userForm = $('#user-form');
-    const $calendar = $('#calendar');
     const $seats = $('#seats');
     const $confirmation = $('#confirmation');
     const $thankyou = $('#thankyou');
     const $name = $('#name');
     const $email = $('#email');
     const $phone = $('#phone');
-    const datapicker = $('#datapicker');
+    const $datapicker = $('#datapicker');
+    //const $errorMessage = $('#error-message');
 
     var fecha = '';
     let asientos_libres;
+    var asientos_fecha;
+
     //Obtengo los días con asientos libres actuales
     obtenerAllAsientosLibres().then(function(response) {
         asientos_libres = response;
         console.log(asientos_libres)
 
         // Inicializa el calendario y los asientos aquí.
-        datapicker.datepicker({
+        $datapicker.datepicker({
             format: 'yyyy-mm-dd', // Formato de fecha
             autoclose: true, // Cerrar automáticamente el calendario después de seleccionar una fecha
             todayHighlight: true, // Resaltar la fecha actual
@@ -72,6 +74,7 @@ $(document).ready(function () {
         const name = $name.val().trim();
         const email = $email.val().trim();
         const phone = $phone.val().trim();
+        const fecha = $datapicker.val().trim();
         
 
         // Valida los campos del formulario
@@ -79,37 +82,62 @@ $(document).ready(function () {
 
         if (errorMessage) {
             // Muestra el mensaje de error si la validación falla
-            $errorMessage.text(errorMessage).insertAfter($userForm);
+            alert(errorMessage);
         } else {
             // Si la validación es exitosa, muestra el calendario
             $userForm.hide();
-            $calendar.removeClass('d-none');
+
+            // AJAX request para obtener los asientos libres de la fecha seleccionada
+             obtenerAsientosLibresFecha(fecha).then( function(response){
+                asientos_fecha = response;
+
+                console.log(asientos_fecha);
+
+                //Pintar asientos los 100 asientos, poniendo el fondo azúl en los asientos libres y gris en los asientos ocupados.
+                for (let i = 1; i <= 100; i++) {
+                    const isFree = asientos_fecha.some(asiento => parseInt(asiento.numero_asiento) === i);
+                    const seatClass = isFree ? 'seat' : 'seat occupied';
+                    const seatElement = $('<div>').addClass(seatClass).attr('data-seat-number', i);
+                
+                    if (isFree) {
+                        seatElement.on('click', function () {
+                            $('.seat.selected').removeClass('selected');
+                            seatElement.addClass('selected');
+                            $('#confirmation').removeClass('d-none');
+                        });
+                    }
+                
+                    $('#seats').append(seatElement);
+                }
+                
+                $('#seats').removeClass('d-none');
+            });
         }
-        // Si la validación es exitosa, muestra el calendario
-        $userForm.hide();
-        $calendar.removeClass('d-none');
     });
-
-    // Agrega eventos para manejar la selección de fechas en el calendario aquí
-
+    
     
 
-
-    // Agrega eventos para manejar la selección de asientos aquí
-
-
-    // Maneja la confirmación de la reserva
-    $confirmation.on('click', 'button', function () {
-        // Envía la reserva al servidor y muestra el mensaje de agradecimiento aquí (por ejemplo, utilizando Ajax)
-
-        $confirmation.hide();
-        $thankyou.removeClass('d-none');
-
-        // Reinicia la página después de 10 segundos
-        setTimeout(function () {
-            location.reload();
-        }, 10000);
+    $('#confirmation button').on('click', function () {
+        const selectedSeat = $('.seat.selected').attr('data-seat-number');
+        const userInfo = {
+            name: $name.val().trim(),
+            email: $email.val().trim(),
+            phone: $phone.val().trim(),
+            fecha: $datapicker.val().trim(),
+            asiento: selectedSeat
+        };
+    
+        // Aquí se llama a la función que gestiona la reserva con la información de userInfo
+        gestionarReserva(userInfo).then(function () {
+            $('#confirmation').addClass('d-none');
+            $('#thankyou').removeClass('d-none');
+        }).catch(function (error) {
+            console.error('Error al gestionar la reserva:', error);
+            alert('Lo sentimos, ha ocurrido un error al gestionar la reserva. Por favor, inténtalo de nuevo.');
+        });
     });
+
+        
     function obtenerEstadoParaFecha(fecha) {
         for (var key in asientos_libres) {
           //console.log(key)
@@ -128,6 +156,8 @@ $(document).ready(function () {
         }
         return 'desconocido';
     }
+
+    
 
 });
 
@@ -155,11 +185,6 @@ function validateForm(name, email, phone, date) {
     return ''; // No hay errores
 }
 
-function obtenerAllAsientosLibres() {
-    return $.getJSON('http://127.0.0.1:3000/app/php/asientos_libres_all.php').then(function(response) {
-        return response;
-     });
-}
 
 function formatDate(year, month, day) {
     const formattedMonth = month.toString().padStart(2, '0');
