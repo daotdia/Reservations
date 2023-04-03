@@ -13,6 +13,7 @@ $(document).ready(function () {
     let asientos_libres;
     var asientos_fecha;
 
+    
     //Obtengo los días con asientos libres actuales
     obtenerAllAsientosLibres().then(function(response) {
         asientos_libres = response;
@@ -32,7 +33,7 @@ $(document).ready(function () {
 
                 
                 // Obtener el estado de color para la fecha seleccionada
-                var estado = obtenerEstadoParaFecha(formatDate(year,month,day));
+                var estado = obtenerEstadoParaFecha(formatDate(year,month,day), asientos_libres);
 
 
                 if (estado === 'verde') {
@@ -65,7 +66,6 @@ $(document).ready(function () {
         console.error(error);
     });
 
-    
 
     // Maneja el envío del formulario de información del usuario
     $userForm.on('submit', function (event) {
@@ -103,21 +103,20 @@ $(document).ready(function () {
                         seatElement.on('click', function () {
                             $('.seat.selected').removeClass('selected');
                             seatElement.addClass('selected');
-                            $('#confirmation').removeClass('d-none');
+                            $confirmation.removeClass('d-none');
                         });
                     }
                 
-                    $('#seats').append(seatElement);
+                    $seats.append(seatElement);
                 }
                 
-                $('#seats').removeClass('d-none');
+                $seats.removeClass('d-none');
             });
         }
     });
     
     
-
-    $('#confirmation button').on('click', function () {
+    $confirmation.on('click', function () {
         const selectedSeat = $('.seat.selected').attr('data-seat-number');
         const userInfo = {
             name: $name.val().trim(),
@@ -129,66 +128,11 @@ $(document).ready(function () {
     
         // Aquí se llama a la función que gestiona la reserva con la información de userInfo
         gestionarReserva(userInfo).then(function () {
-            $('#confirmation').addClass('d-none');
-            $('#thankyou').removeClass('d-none');
+            $confirmation.addClass('d-none');
+            $thankyou.removeClass('d-none');
         }).catch(function (error) {
             console.error('Error al gestionar la reserva:', error);
             alert('Lo sentimos, ha ocurrido un error al gestionar la reserva. Por favor, inténtalo de nuevo.');
         });
     });
-
-        
-    function obtenerEstadoParaFecha(fecha) {
-        for (var key in asientos_libres) {
-          //console.log(key)
-          //console.log(fecha)
-          if (key == fecha) {
-            var asientosLibresFecha = asientos_libres[key];
-            var numAsientosLibres = asientosLibresFecha.length;
-            if (numAsientosLibres >= 5) {
-              return 'verde';
-            } else if (numAsientosLibres > 0) {
-              return 'amarillo';
-            } else {
-              return 'rojo';
-            }
-          }
-        }
-        return 'desconocido';
-    }
-
-    
-
 });
-
-
-function validateForm(name, email, phone, date) {
-    const emailPattern = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-    const phonePattern = /^\d{7,15}$/; // Asume números de 7 a 15 dígitos
-
-    if (name === '' || email === '' || phone === '') {
-        return 'Por favor, completa todos los campos.';
-    }
-
-    if (!emailPattern.test(email)) {
-        return 'Por favor, introduce una dirección de correo electrónico válida.';
-    }
-
-    if (!phonePattern.test(phone)) {
-        return 'Por favor, introduce un número de teléfono válido.';
-    }
-
-    if(date === ''){
-        return 'Por favor, seleccione una fecha para reservar'
-    }
-
-    return ''; // No hay errores
-}
-
-
-function formatDate(year, month, day) {
-    const formattedMonth = month.toString().padStart(2, '0');
-    const formattedDay = day.toString().padStart(2, '0');
-
-    return `${year}-${formattedMonth}-${formattedDay}`;
-}

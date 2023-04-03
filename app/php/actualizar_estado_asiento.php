@@ -17,6 +17,10 @@ if (!$conn) {
     die("La conexión a la base de datos falló");
 }
 
+// Iniciar transacción con nivel de aislamiento SERIALIZABLE para evitar que se pueda leer la fila que se está modificando.
+pg_query($conn, "BEGIN ISOLATION LEVEL SERIALIZABLE");
+
+
 // Actualizar el estado del asiento
 $query = "UPDATE asientos SET estado = $estado WHERE id_fecha = $id_fecha AND numero_asiento = $numero_asiento";
 
