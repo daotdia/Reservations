@@ -14,10 +14,11 @@ body {
 }
 
 h1 {
-    font-size: 2.5rem;
-    font-weight: 300;
+    font-size: 3rem;
+    font-weight: 600;
     color: #357a8f;
     margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Formulario de información del usuario */
@@ -25,17 +26,108 @@ h1 {
     margin-bottom: 20px;
 }
 
-.datepicker {
-    width: 400px !important;
-    height: 500px !important;
+.form-control {
+    border: 2px solid #357a8f;
+    border-radius: 5px;
+}
+
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Etiquetas de los campos de formulario */
+#user-form label {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #357a8f;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de los campos de formulario al enfocarse */
+.form-control:focus ~ label {
+    color: #28a745;
+}
+
+
+/* Botones */
+button.btn {
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+button.btn-primary {
+    background-color: #357a8f;
+    border-color: #357a8f;
+}
+
+button.btn-primary:hover {
+    background-color: #2c6d7a;
+    border-color: #2c6d7a;
+}
+
+button.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+button.btn-success:hover {
+    background-color: #218c3c;
+    border-color: #218c3c;
+}
+
+
+datepicker {
+    width: 320px !important;
+    height: 400px !important;
     font-size: 24px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.datepicker table {
+    border-collapse: separate;
+    border-spacing: 5px;
+    margin: 10px;
+}
+
+.datepicker table thead tr th {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #357a8f;
+    padding: 10px;
 }
 
 .datepicker table tbody tr td {
-    padding: 15px;
-    font-size: 24px;
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-radius: 3px;
 }
-  
+
+.datepicker table tbody tr td:hover {
+    background-color: #e0e0e0;
+}
+
+.datepicker table tbody tr td.day.active {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+.datepicker table tbody tr td.day.active:hover {
+    background-color: #218c3c;
+}
+
+/*
+.datepicker .datepicker-days tbody tr td.old, 
+.datepicker .datepicker-days tbody tr td.new {
+    visibility: hidden;
+}
+*/
+
 
 /* Asientos */
 #seats {
@@ -51,6 +143,7 @@ h1 {
     background-color: #007bff;
     border-radius: 3px;
     cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .seat.occupied {
@@ -60,7 +153,9 @@ h1 {
 
 .seat.selected {
     background-color: #28a745;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 
 /* Botón de confirmación */
 #confirmation {
@@ -70,8 +165,11 @@ h1 {
 /* Mensaje de agradecimiento */
 #thankyou {
     margin-top: 20px;
+    font-size: 1rem;
+    font-weight: 250;
+    color: #0550f1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
-
 
 /* Fondos de los días del calendario*/
 .bg-success {

@@ -1,18 +1,14 @@
 <?php
 
-//En producción cambiar por el dominio concreto del docker.
-header('Access-Control-Allow-Origin: *');
-
 // Obtener los datos enviados desde el archivo Ajax.js
 $nombre = $_POST['nombre'];
 $email = $_POST['email'];
 $telefono = $_POST['telefono'];
 $fecha = $_POST['fecha'];
 $numero_asiento = $_POST['numero_asiento'];
-$estado = $_POST['estado'];
 
 // Establecer la conexión a la base de datos
-$conn = pg_connect("host=localhost dbname=postgres user=postgres password=asientos");
+$conn = pg_connect("host=db dbname=postgres user=postgres password=asientos");
 
 // Verificar si la conexión se estableció correctamente
 if (!$conn) {
@@ -60,15 +56,29 @@ if (pg_num_rows($result) > 0) {
     die("La consulta a la base de datos falló al encontrar la fecha");
 }
 
-// Agregar la reserva a la tabla "reservas"
-$query = "INSERT INTO reservas (id_usuario, id_fecha, id_asiento) VALUES ($id_usuario, $id_fecha, $numero_asiento)";
+//Obtengo el id del asiento.
+$query = "SELECT id_asiento FROM asientos INNER JOIN fechas ON asientos.id_fecha = fechas.id_fecha WHERE numero_asiento = '$numero_asiento' AND fecha = '$fecha';";
 $result = pg_query($conn, $query);
 
 // Verificar si la consulta se ejecutó correctamente
 if (!$result) {
     // Si hay un error, hacer un rollback de la transacción
     pg_query($conn, "ROLLBACK");
-    die("La consulta a la base de datos falló");
+    die("La consulta a la base de datos falló al tratar de encontrar el id del asiento");
+}
+$row = pg_fetch_assoc($result);
+$id_asiento = $row['id_asiento'];
+
+// Agregar la reserva a la tabla "reservas"
+$query = "INSERT INTO reservas (id_usuario, id_fecha, id_asiento) VALUES ($id_usuario, $id_fecha, $id_asiento)";
+$result = pg_query($conn, $query);
+
+// Verificar si la consulta se ejecutó correctamente
+if (!$result) {
+    // Si hay un error, hacer un rollback de la transacción
+    $result = pg_query($conn, $query);
+    pg_query($conn, "ROLLBACK");
+    die("La consulta a la base de datos falló al tratar de insertar una nueva reserva $id_usuario, $id_fecha, $id_asiento");
 }
 
 // Si todo fue exitoso, hacer un commit de la transacción

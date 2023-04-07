@@ -1,0 +1,7 @@
+{
+    "require": {
+        "sendgrid/sendgrid": "^6.2",
+        "mailjet/mailjet-apiv3-php": "^1.5",
+        "mailgun/mailgun-php": "*"
+    }
+}

@@ -1,3 +1,5 @@
+import { obtenerEstadoParaFecha,  formatDate, validateForm} from "./util.js";
+
 $(document).ready(function () {
     const $userForm = $('#user-form');
     const $seats = $('#seats');
@@ -13,7 +15,7 @@ $(document).ready(function () {
     let asientos_libres;
     var asientos_fecha;
 
-    
+
     //Obtengo los días con asientos libres actuales
     obtenerAllAsientosLibres().then(function(response) {
         asientos_libres = response;
@@ -60,7 +62,7 @@ $(document).ready(function () {
             fecha = dateText;
             },
             orientation: 'bottom',
-            language: 'es'
+            language: 'es',
         });
     }).catch(function(error) {
         console.error(error);
@@ -117,22 +119,31 @@ $(document).ready(function () {
     
     
     $confirmation.on('click', function () {
-        const selectedSeat = $('.seat.selected').attr('data-seat-number');
+        const numero_asiento = $('.seat.selected').attr('data-seat-number');
         const userInfo = {
             name: $name.val().trim(),
             email: $email.val().trim(),
             phone: $phone.val().trim(),
             fecha: $datapicker.val().trim(),
-            asiento: selectedSeat
+            asiento: numero_asiento
         };
     
         // Aquí se llama a la función que gestiona la reserva con la información de userInfo
-        gestionarReserva(userInfo).then(function () {
+        gestionarReserva(userInfo).then(function (response) {
+            $seats.addClass('d-none');
             $confirmation.addClass('d-none');
-            $thankyou.removeClass('d-none');
+            $thankyou.removeClass('d-none').html('Gracias por tu reserva. Has reservado el asiento <strong>' + userInfo.asiento + '</strong> para la fecha <strong>' + userInfo.fecha + '</strong>. <br>Te hemos enviado un email de confirmación con los detalles de tu reserva al mail: ' + userInfo.email);;
+            // Aquí se puede hacer algo con la respuesta del servidor
+            console.log(response);
+            setTimeout(function () {
+                location.reload();
+            }, 5000);
         }).catch(function (error) {
             console.error('Error al gestionar la reserva:', error);
-            alert('Lo sentimos, ha ocurrido un error al gestionar la reserva. Por favor, inténtalo de nuevo.');
+            setTimeout(function () {
+                location.reload();
+            }, 5000);
         });
     });
 });
+

@@ -1,0 +1,1 @@
+# En producción no se debería de subbir password.env, en este caso es un mail de prueba sin info con una contraseña autogenerada.

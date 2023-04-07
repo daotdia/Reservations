@@ -1,11 +1,4 @@
--- Eliminar para producción.
 
-CREATE DATABASE postgres;
-GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;
-
-\c postgres
-
--- Hasta aquí. 
 
 CREATE TABLE fechas (
     id_fecha SERIAL PRIMARY KEY,
@@ -36,18 +29,8 @@ CREATE TABLE reservas (
 );
 
 --Indice para mejorar la búsqueda de los asientos.
-CREATE UNIQUE INDEX idx_numero_asiento ON asientos (numero_asiento);
+CREATE INDEX idx_numero_asiento ON asientos (numero_asiento);
 
-
---Constraint para evitar que hayan asientos libres con reserva y asientos ocupados sin reserva.
-ALTER TABLE asientos ADD CONSTRAINT no_inconsistencia_estado_asiento CHECK (
-  (estado = true AND NOT EXISTS (
-    SELECT 1 FROM reservas WHERE reservas.id_asiento = asientos.id_asiento
-  )) OR 
-  (estado = false AND EXISTS (
-    SELECT 1 FROM reservas WHERE reservas.id_asiento = asientos.id_asiento
-  ))
-);
 
 
 --Función para establecer el estado del asiento a libre tras eliminar una reserva y a ocupado tras insertarla.
@@ -66,5 +49,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER actualizar_estado_asiento AFTER DELETE ON reservas
-FOR EACH ROW EXECUTE FUNCTION actualizar_estado_asiento();
+CREATE TRIGGER actualizar_estado_asiento
+AFTER INSERT OR DELETE ON reservas
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_estado_asiento();

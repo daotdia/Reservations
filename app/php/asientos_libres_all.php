@@ -1,11 +1,8 @@
 <?php
 
-//En producción cambiar por el dominio concreto del docker.
-header('Access-Control-Allow-Origin: *');
-
 // Establecer la conexión a la base de datos
 //CAMBIAR EN PRODUCCIÓN LOCALHOST POR DB
-$dbconn = pg_connect("host=localhost dbname=postgres user=postgres password=asientos");
+$dbconn = pg_connect("host=db dbname=postgres user=postgres password=asientos");
 
 // Verificar si la conexión se estableció correctamente
 if (!$dbconn) {

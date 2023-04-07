@@ -1,4 +1,4 @@
-function validateForm(name, email, phone, date) {
+export function validateForm(name, email, phone, date) {
     const emailPattern = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
     const phonePattern = /^\d{7,15}$/; // Asume números de 7 a 15 dígitos
 
@@ -22,14 +22,14 @@ function validateForm(name, email, phone, date) {
 }
 
 
-function formatDate(year, month, day) {
+export function formatDate(year, month, day) {
     const formattedMonth = month.toString().padStart(2, '0');
     const formattedDay = day.toString().padStart(2, '0');
 
     return `${year}-${formattedMonth}-${formattedDay}`;
 }
 
-function obtenerEstadoParaFecha(fecha, asientos_libres) {
+export function obtenerEstadoParaFecha(fecha, asientos_libres) {
     for (var key in asientos_libres) {
       //console.log(key)
       //console.log(fecha)

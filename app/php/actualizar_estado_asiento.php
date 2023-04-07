@@ -1,8 +1,5 @@
 <?php
 
-//En producción cambiar por el dominio concreto del docker.
-header('Access-Control-Allow-Origin: *');
-
 // Obtener los datos enviados desde el archivo Ajax.js
 $id_fecha = $_POST['id_fecha'];
 $numero_asiento = $_POST['numero_asiento'];
@@ -10,7 +7,7 @@ $estado = $_POST['estado'];
 
 // Establecer la conexión a la base de datos
 //CAMBIAR EN PRODUCCIÓN LOCALHOST POR DB
-$conn = pg_connect("host=localhost dbname=postgres user=postgres password=asientos");
+$conn = pg_connect("host=db dbname=postgres user=postgres password=asientos");
 
 // Verificar si la conexión se estableció correctamente
 if (!$conn) {
